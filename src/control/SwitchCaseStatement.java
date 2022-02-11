@@ -13,7 +13,6 @@ public class SwitchCaseStatement {
 		System.out.println("Enter any Day of Week : ");
 	    days=sc.nextInt();
 		
-		
 		switch(days)
 		{
 		case 1:
