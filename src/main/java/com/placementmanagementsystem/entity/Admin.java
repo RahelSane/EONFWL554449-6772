@@ -2,11 +2,15 @@ package com.placementmanagementsystem.entity;
 
 
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -43,6 +47,14 @@ public class Admin
 	@Size(min = 10, max = 10, message = "Admin Contact Number length should be 10 only")
 	private String adminContact;
 	
+	
+	/*
+	 * @OneToMany(mappedBy = "admin") private List<StudentDetails> studentdetails;
+	 * 
+	 * @OneToMany(mappedBy = "admin") private List<CompanyDetails> companydetails;
+	 * 
+	 * @OneToMany(mappedBy = "admin") private List<JobDetails> jobdetails;
+	 */
 	
 	
 }

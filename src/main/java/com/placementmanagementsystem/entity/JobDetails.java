@@ -1,13 +1,18 @@
 package com.placementmanagementsystem.entity;
 
 import java.sql.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -53,8 +58,26 @@ import lombok.ToString;
 		@Column(length = 25,nullable = false)
 		private Date jobPostdate;
 		
+		@JoinColumn(name = "companyName")
+		
 		
 		@Column(length = 25,nullable = false)
 		private Date jobExpirydate;
+	
+		  @ManyToOne
+		 private CompanyDetails companydetails;
+		  
+			/*
+			 * @ManyToOne private StudentDetails studentdetails;
+			 */
+			/*
+			 * @ManyToOne private Admin admin;
+			 */
+		  
+			@OneToMany(mappedBy = "jobdetails", cascade = CascadeType.ALL)
+			List<AppliedJob> appliedjob;
+		 
+		
+		
 }
 

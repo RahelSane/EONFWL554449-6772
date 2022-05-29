@@ -11,6 +11,10 @@ public interface JobDetailsService
 	public JobDetails addJobDetails(JobDetails jobdetails);
 	
 	public List<JobDetails> getAllJobDetails();
+
+	public JobDetails getJobDetailsByjobId(int jobId);
+
+	
 }
 
 

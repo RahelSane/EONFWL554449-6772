@@ -32,7 +32,7 @@ public class AdminController
 		public String adminsignup(Model model)
 		{
 			model.addAttribute("admin", new Admin());
-			return "admin-signup";
+			return "admin/admin-signup";
 		}
 
 		@PostMapping("/checkLogin11")
@@ -42,18 +42,18 @@ public class AdminController
 			Admin admin2 = adminService.checkLogin11(admin.getAdminEmail(),admin.getAdminContact());
 			if(admin2!=null)
 			{
-				return "admin-dashboard";
+				return "admin/admin-dashboard";
 			}
 			else
 			{
-				return "admin-login";
+				return "admin/admin-login";
 			}
 		}
 		
 		@GetMapping("/admin-login")
 		public String adminlogin()
 		{
-			return "admin-login";
+			return "admin/admin-login";
 
 		}
 
@@ -69,14 +69,14 @@ public class AdminController
 				 if(result.hasErrors())
 				 {
 					model.addAttribute("admin", admin);
-					 return "admin-signup";
+					 return "admin/admin-signup";
 				 }
 		
 					if(agreement)
 					{
 						session.setAttribute("message1", new MessagePMC("User Logged in Successfully !","alert-success"));
 						this.adminService.addAdmin(admin);
-						return "admin-login";
+						return "admin/admin-login";
 					}
 					else
 					{
@@ -90,6 +90,6 @@ public class AdminController
 				}
 
 				
-				return "admin-signup";
+				return "admin/admin-signup";
 		}
 }

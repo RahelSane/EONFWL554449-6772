@@ -31,6 +31,19 @@ public class JobDetailsServiceImplementation implements JobDetailsService
 		return jobDetailsRepo.findAll();
 	}
 
+	@Override
+	public JobDetails getJobDetailsByjobId(int jobId) {
+		// TODO Auto-generated method stub
+		
+		return this.jobDetailsRepo.findById(jobId).get();
+	}
+
+	/*
+	 * @Override public List<JobDetails> getAllJobDetailsBycompanyId(int companyId)
+	 * { // TODO Auto-generated method stub return
+	 * this.jobDetailsRepo.getAllJobDetailsBycompanyId(companyId); }
+	 */
+
 
 
 }

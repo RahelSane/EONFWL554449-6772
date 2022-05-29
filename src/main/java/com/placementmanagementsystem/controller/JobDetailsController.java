@@ -3,25 +3,34 @@ package com.placementmanagementsystem.controller;
 
 
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
-
+import com.placementmanagementsystem.entity.CompanyDetails;
 import com.placementmanagementsystem.entity.JobDetails;
 import com.placementmanagementsystem.entity.MessagePMC;
-
+import com.placementmanagementsystem.entity.StudentDetails;
+import com.placementmanagementsystem.service.CompanyDetailsService;
 import com.placementmanagementsystem.service.JobDetailsService;
 
 
@@ -32,17 +41,22 @@ public class JobDetailsController
 
 	@Autowired
 	JobDetailsService jobDetailsService;
+	
+
+	@Autowired
+	CompanyDetailsService companyDetailsService;
 		
 		@GetMapping("/add-Job")
 		public String addJob(Model model)
 		{
 			model.addAttribute("jobdetails", new JobDetails());
-			return "add-Job";
+			return "company/add-Job";
 
 		}
 
-		@PostMapping("/addjob22")
-		public String addjobs(@Valid @ModelAttribute JobDetails jobdetails,BindingResult result, @RequestParam(value = "agreement", defaultValue = "false") boolean agreement,Model model, HttpSession session)
+		@PostMapping("/addjob22{companyId}")
+		public String addjobs(@Valid @ModelAttribute JobDetails jobdetails,BindingResult result,@PathVariable("companyId") int companyId,
+				@RequestParam(value = "agreement", defaultValue = "false") boolean agreement,Model model, HttpSession session)
 		{
 			System.out.println(agreement);
 			System.out.println(jobdetails);
@@ -53,7 +67,7 @@ public class JobDetailsController
 				 {
 					 System.out.println("Message 1");
 					model.addAttribute("jobdetails", jobdetails);
-					 return "add-Job";
+					 return "company/add-Job";
 				 }
 						 
 				
@@ -63,8 +77,16 @@ public class JobDetailsController
 					{
 						 System.out.println("Message 2");
 						session.setAttribute("message1", new MessagePMC("Job is Created Successfully!!!!","alert-success"));
-						this.jobDetailsService.addJobDetails(jobdetails);
-						return "redirect:/ViewJobDetails";
+				System.out.println("CompanyId --------------"+companyId);
+					    CompanyDetails companyDetail = this.companyDetailsService.getcompanyDetailById(companyId);
+					  //  jobdetails.set
+					    companyDetail.getJobdetails().add(jobdetails);
+					    
+					    jobdetails.setCompanydetails(companyDetail);
+						this.companyDetailsService.addCompanyDetails(companyDetail);
+					
+						//this.jobDetailsService.addJobDetails(jobdetails);
+						return "company/ViewJobDetails1";
 						//return "ViewJobDetails";
 					}
 					else
@@ -80,7 +102,7 @@ public class JobDetailsController
 				}
 				 System.out.println("Message 4");
 				
-				return "add-Job";
+				return "company/add-Job";
 		}
 		
 		@GetMapping("/ViewJobDetails")
@@ -88,7 +110,74 @@ public class JobDetailsController
 		{
 			List<JobDetails> jobdetails1 = this.jobDetailsService.getAllJobDetails();
 			model.addAttribute("jdObj", jobdetails1);
-			return "ViewJobDetails";
+			return "company/ViewJobDetails";
 			
 		}
+		
+		@GetMapping("/ViewJobDetails1")
+		public String ViewJobDetails1(Model model)
+		{
+			List<JobDetails> jobdetails1 = this.jobDetailsService.getAllJobDetails();
+			model.addAttribute("jdObj", jobdetails1);
+			return "company/ViewJobDetails1";
+			
+		}
+		
+		@GetMapping("/ViewJob")
+		public String ViewJob(Model model)
+		{
+			List<JobDetails> jobdetails2 = this.jobDetailsService.getAllJobDetails();
+			
+			//List<CompanyDetails> companydetails2 = this.companyDetailsService.getcompanyDetailByCompanyName(companyName);
+			
+			
+			model.addAttribute("jdObj2", jobdetails2);
+			return "company/ViewJob";
+			
+		}
+		/*
+		 * @GetMapping("/ViewJob{companyId}") public String ViewJob(Model
+		 * model, @PathVariable("companyId") int companyId) {
+		 * System.out.println("COMPANY ID ------------"+companyId); List<JobDetails>
+		 * jobdetails2 = this.jobDetailsService.getAllJobDetailsBycompanyId(companyId);
+		 * 
+		 * //List<CompanyDetails> companydetails2 =
+		 * this.companyDetailsService.getcompanyDetailByCompanyName(companyName);
+		 * 
+		 * 
+		 * model.addAttribute("jdObj2", jobdetails2); return "company/ViewJob";
+		 * 
+		 * }
+		 */
+		
+		/*
+		 * @GetMapping("/UpdateJobDetails{companyId}") public String
+		 * editjobForm(@PathVariable int companyId, Model model) {
+		 * System.out.println("update ----------" + companyId);
+		 * model.addAttribute("companydetails",
+		 * companyDetailsService.getcompanyDetailById(companyId)); return
+		 * "company/UpdateJobDetails";
+		 * 
+		 * }
+		 * 
+		 * @PostMapping("/saveUpdateJobDetails{companyId}") public String
+		 * updateJobDetails(@ModelAttribute JobDetails jobdetails,
+		 * 
+		 * @PathVariable("companyId") int companyId) {
+		 * 
+		 * this.studentdetailsService.updateStudentDetails(studentdetails, studentId);
+		 * return "redirect:/ViewStudentDetails";
+		 * 
+		 * }
+		 * 
+		 * @GetMapping("/DeleteStudentDetails{studentId}") public String
+		 * deleteStudentDetails(@PathVariable("studentId") int studentId,HttpSession
+		 * session) { studentdetailsService.deleteStudentDetailsBystudentId(studentId);
+		 * session.setAttribute("message1",new
+		 * MessagePMC("student deleted successfully","alert-success"));
+		 * 
+		 * return "redirect:/ViewStudentDetails";
+		 * 
+		 * }
+		 */
 }
